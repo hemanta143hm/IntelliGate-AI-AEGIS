@@ -10,23 +10,23 @@
   <main class="shell">
     <header class="topbar">
       <div class="brand"><span class="brand-mark">A</span><div><strong>AEGIS</strong><span>IntelliGate AI</span></div></div>
-      <div class="topbar-actions"><a class="back-link" href="/camera">Live camera</a><div class="system-pill"><span class="status-dot {{ 'is-ok' if status.system_status == 'ok' else 'is-warn' }}"></span>{{ status.system_status|upper }} <small>SYSTEM STATUS</small></div></div>
+      <div class="topbar-actions"><a class="back-link" href="/camera">Live camera</a><div class="system-pill"><span class="status-dot {{ 'is-ok' if status.system_status == 'ok' else 'is-warn' }}" id="system-status-dot"></span><span id="system-status">{{ status.system_status|upper }}</span> <small>SYSTEM STATUS</small></div></div>
     </header>
     <section class="hero">
-      <div><p class="eyebrow">PHASE 01 / COMMAND VIEW</p><h1>Security command center</h1><p class="lede">A clear operational baseline for your physical security environment.</p></div>
+      <div><p class="eyebrow">PHASE 03 / VISION INTELLIGENCE</p><h1>Security command center</h1><p class="lede">Local person detection and operational telemetry for your physical security environment.</p></div>
       <div class="timestamp" id="clock">--:--:--</div>
     </section>
     <section class="metrics" aria-label="System metrics">
-      <article class="metric metric-accent"><span>Security Index</span><strong>{{ status.security_index if status.security_index is not none else '—' }}</strong><small>Awaiting live telemetry</small></article>
-      <article class="metric"><span>Camera Status</span><strong>{{ status.camera_status.online }} <em>/ {{ status.camera_status.total }}</em></strong><small>Online / provisioned</small></article>
-      <article class="metric"><span>Known Presence</span><strong>{{ status.known_presence }}</strong><small>Active sessions</small></article>
-      <article class="metric"><span>Unrecognized Events</span><strong>{{ status.unrecognized_events }}</strong><small>Persisted event records</small></article>
-      <article class="metric"><span>Open Incidents</span><strong>{{ status.open_incidents }}</strong><small>Requiring review</small></article>
+      <article class="metric metric-accent"><span>Camera</span><strong id="camera-engine-status">{{ 'READY' if status.camera_engine.status == 'ONLINE' else 'OFFLINE' }}</strong><small>Browser frame ingestion</small></article>
+      <article class="metric"><span>Frames Received</span><strong id="frames-received">{{ status.camera_engine.frames_received }}</strong><small>Accepted by backend</small></article>
+      <article class="metric"><span>People Detected</span><strong id="people-detected">{{ status.vision_engine.person_count }}</strong><small>Current camera result</small></article>
+      <article class="metric"><span>Current Occupancy</span><strong id="current-occupancy">{{ status.occupancy.current_people }}</strong><small id="occupancy-percent">People detected</small></article>
+      <article class="metric"><span>Processing Latency</span><strong id="processing-latency">{{ status.vision_engine.processing_latency_ms or '--' }}<em>{{ ' ms' if status.vision_engine.processing_latency_ms else '' }}</em></strong><small id="processing-rate">{{ status.vision_engine.processing_rate_fps or '--' }} FPS processing rate</small></article>
     </section>
     <section class="workspace">
-      <div class="panel health-panel"><div class="panel-heading"><h2>System Health</h2><span class="tag tag-ready">{{ status.system_health.status|upper }}</span></div><div class="health-list"><div><span>Database</span><b>{{ status.system_health.components.database|upper }}</b></div><div><span>Storage</span><b>{{ status.system_health.components.storage|upper }}</b></div><div><span>Application</span><b>{{ status.system_health.components.application|upper }}</b></div></div></div>
-      <div class="panel location-panel"><div class="panel-heading"><h2>Current Location</h2><span class="tag">UNASSIGNED</span></div><div class="location-empty"><span class="crosshair">+</span><p>No active location configured</p><small>Connect a camera and location to begin telemetry.</small></div></div>
-      <div class="panel engines-panel"><div class="panel-heading"><h2>AI Engines</h2><span class="tag">PHASE 1</span></div><div class="engine-row"><span>Face recognition</span><b class="engine-standby">STANDBY</b></div><div class="engine-row"><span>Behavior analysis</span><b class="engine-standby">STANDBY</b></div><p class="panel-note">No detections are generated in Phase 1.</p></div>
+      <div class="panel health-panel"><div class="panel-heading"><h2>System Health</h2><span class="tag tag-ready" id="health-status">{{ status.system_health.status|upper }}</span></div><div class="health-list"><div><span>Database</span><b id="health-database">{{ status.system_health.components.database|upper }}</b></div><div><span>Storage</span><b id="health-storage">{{ status.system_health.components.storage|upper }}</b></div><div><span>Application</span><b id="health-application">{{ status.system_health.components.application|upper }}</b></div></div></div>
+      <div class="panel control-panel"><div class="panel-heading"><h2>Camera Control</h2><span class="tag" id="camera-control-status">{{ 'READY' if status.camera_engine.status == 'ONLINE' else 'OFFLINE' }}</span></div><p class="panel-copy">Use the live camera workspace to select a browser camera, grant permission, and inspect local person detections.</p><a class="button button-primary dashboard-button" href="/camera">Live Vision</a></div>
+      <div class="panel engines-panel"><div class="panel-heading"><h2>Vision Engine</h2><span class="tag" id="vision-status">{{ status.vision_engine.status }}</span></div><div class="engine-row"><span>Camera Acquisition</span><b class="engine-ready">READY</b></div><div class="engine-row"><span>Frame Transport</span><b class="engine-ready">READY</b></div><div class="engine-row"><span>Person Detection</span><b id="person-detection-status" class="engine-ready">{{ status.vision_engine.status }}</b></div><div class="engine-row"><span>Tracking</span><b class="engine-ready">TEMPORARY IDS</b></div><p class="panel-note" id="vision-error">{{ status.vision_engine.error or 'No identity claim is made by person detection.' }}</p></div>
     </section>
   </main>
   <script src="/static/js/app.js"></script>

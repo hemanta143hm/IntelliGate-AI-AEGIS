@@ -13,19 +13,19 @@
       <div class="topbar-actions"><a class="back-link" href="/">Command center</a><div class="system-pill"><span class="status-dot is-ok"></span>LOCAL <small>PROCESSING</small></div></div>
     </header>
     <section class="hero camera-hero">
-      <div><p class="eyebrow">PHASE 02 / REAL CAMERA ENGINE</p><h1>Live camera</h1><p class="lede">Acquire a real browser camera stream and transport frames to the local AEGIS engine.</p></div>
+      <div><p class="eyebrow">PHASE 03 / VISION INTELLIGENCE</p><h1>Live camera</h1><p class="lede">Acquire a real browser camera stream and inspect local person detections without identity claims.</p></div>
       <div class="camera-health" aria-live="polite"><span class="status-dot" id="health-dot"></span><strong id="camera-status">OFFLINE</strong><small id="status-detail">Awaiting camera permission</small></div>
     </section>
     <section class="camera-layout">
       <div class="camera-stage panel">
         <div class="panel-heading"><h2>Live feed</h2><span class="tag" id="feed-tag">NO SIGNAL</span></div>
-        <div class="video-frame"><video id="camera-video" autoplay playsinline muted></video><div class="video-empty" id="video-empty"><span class="crosshair">+</span><p>Camera stream is offline</p><small>Select a device and start the camera.</small></div><span class="recording-indicator" id="recording-indicator">LIVE</span></div>
-        <div class="feed-metrics"><div><span>Resolution</span><b id="resolution">-- x --</b></div><div><span>FPS estimate</span><b id="fps">--</b></div><div><span>Frames sent</span><b id="frames-sent">0</b></div></div>
+        <div class="video-frame"><video id="camera-video" autoplay playsinline muted></video><div id="detection-overlay" class="detection-overlay" aria-live="polite"></div><div class="video-empty" id="video-empty"><span class="crosshair">+</span><p>Camera stream is offline</p><small>Select a device and start the camera.</small></div><span class="recording-indicator" id="recording-indicator">LIVE</span></div>
+        <div class="feed-metrics"><div><span>Resolution</span><b id="resolution">-- x --</b></div><div><span>FPS estimate</span><b id="fps">--</b></div><div><span>Frames sent</span><b id="frames-sent">0</b></div><div><span>Current People</span><b id="current-people">0</b></div><div><span>Capacity</span><b id="capacity">--</b></div><div><span>Occupancy</span><b id="occupancy-percent">--</b></div></div>
         <div class="camera-actions"><button class="button button-primary" id="start-camera" type="button">Start camera</button><button class="button" id="stop-camera" type="button" disabled>Stop camera</button><button class="button button-icon" id="snapshot" type="button" disabled aria-label="Save a camera snapshot">Snapshot</button></div>
       </div>
       <aside class="camera-sidebar">
         <section class="panel control-panel"><div class="panel-heading"><h2>Camera source</h2><span class="tag" id="permission-state">UNKNOWN</span></div><label for="camera-select">Available video inputs</label><select id="camera-select"><option value="">Detecting cameras...</option></select><p class="field-note" id="camera-message">Browser permission is requested only when you start a camera.</p><label for="location-input">Virtual location</label><input id="location-input" type="text" value="Unassigned" maxlength="80"><div class="detail-list"><div><span>Camera name</span><b id="camera-name">No camera selected</b></div><div><span>Connection</span><b id="connection-state">Not connected</b></div><div><span>Processing</span><b id="processing-state">Idle</b></div></div></section>
-        <section class="panel privacy-panel"><div class="panel-heading"><h2>Privacy boundary</h2><span class="tag tag-ready">LOCAL</span></div><p>Camera frames are processed by the AEGIS application and are not intentionally uploaded to third-party services.</p><p class="panel-note">Keep this tab open while testing. Closing it stops the camera stream.</p></section>
+        <section class="panel privacy-panel"><div class="panel-heading"><h2>Vision engine</h2><span class="tag" id="vision-state">STANDBY</span></div><p id="vision-message">Vision model has not processed a frame yet.</p><p class="panel-note">Temporary track IDs are not face identity. Unknown people are never labeled criminal.</p></section>
       </aside>
     </section>
   </main>

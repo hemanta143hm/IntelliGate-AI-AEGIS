@@ -9,6 +9,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.services.health import get_health, get_system_status
 from app.engines.camera import camera_engine
+from app.engines.vision import snapshot_dict, vision_engine
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -58,7 +59,13 @@ def camera_test() -> dict[str, object]:
         "frames_received": snapshot.frames_received,
         "last_frame_at": snapshot.last_frame_at,
         "ready_for_browser_frames": True,
+        "vision": snapshot_dict(vision_engine.snapshot()),
     }
+
+
+@router.get("/api/vision/status")
+def vision_status() -> dict[str, object]:
+    return snapshot_dict(vision_engine.snapshot())
 
 
 @router.post("/api/camera/frame", status_code=202)
@@ -71,9 +78,11 @@ async def camera_frame(request: Request) -> dict[str, object]:
         frame = camera_engine.receive_frame(payload, content_type=content_type)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    detection = vision_engine.process_frame(frame)
     return {
         "accepted": True,
         "received_at": frame.received_at,
         "frames_received": camera_engine.snapshot().frames_received,
-        "processing": "queued",
+        "processing": "complete",
+        **snapshot_dict(detection),
     }

@@ -18,6 +18,7 @@ const processingState = document.querySelector("#processing-state");
 const resolution = document.querySelector("#resolution");
 const fps = document.querySelector("#fps");
 const framesSent = document.querySelector("#frames-sent");
+const detectionOverlay = document.querySelector("#detection-overlay");
 
 let stream = null;
 let uploadTimer = null;
@@ -102,6 +103,26 @@ function updateFps(timestamp) {
 
 function updateDimensions() {
   resolution.textContent = video.videoWidth && video.videoHeight ? `${video.videoWidth} x ${video.videoHeight}` : "-- x --";
+}
+
+function renderDetections(result) {
+  const detections = result.detections || [];
+  document.querySelector("#current-people").textContent = result.person_count ?? detections.length;
+  document.querySelector("#capacity").textContent = "--";
+  document.querySelector("#occupancy-percent").textContent = "--";
+  document.querySelector("#vision-state").textContent = result.status || "STANDBY";
+  document.querySelector("#vision-message").textContent = result.status === "UNAVAILABLE" ? "Vision model unavailable" : `${detections.length} person${detections.length === 1 ? "" : "s"} detected. No identity claim is made.`;
+  detectionOverlay.replaceChildren(...detections.map((detection) => {
+    const box = detection.bounding_box;
+    const element = document.createElement("div");
+    element.className = "detection-box";
+    element.style.left = `${(box.x1 / video.videoWidth) * 100}%`;
+    element.style.top = `${(box.y1 / video.videoHeight) * 100}%`;
+    element.style.width = `${((box.x2 - box.x1) / video.videoWidth) * 100}%`;
+    element.style.height = `${((box.y2 - box.y1) / video.videoHeight) * 100}%`;
+    element.innerHTML = `<span>PERSON #${String(detection.track_id).padStart(2, "0")}</span><small>${(detection.confidence * 100).toFixed(1)}%</small>`;
+    return element;
+  }));
 }
 
 function stopFps() {
@@ -192,6 +213,7 @@ async function sendFrame() {
     if (!response.ok) throw new Error(`Backend returned ${response.status}`);
     const result = await response.json();
     framesSent.textContent = result.frames_received;
+    renderDetections(result);
     connectionState.textContent = "Backend connected";
     processingState.textContent = "Frame accepted";
   } catch (error) {
