@@ -10,7 +10,7 @@
   <main class="shell">
     <header class="topbar">
       <div class="brand"><span class="brand-mark">A</span><div><strong>AEGIS</strong><span>IntelliGate AI</span></div></div>
-      <div class="system-pill"><span class="status-dot {{ 'is-ok' if status.system_status == 'ok' else 'is-warn' }}"></span>{{ status.system_status|upper }} <small>SYSTEM STATUS</small></div>
+      <div class="topbar-actions"><a class="back-link" href="/camera">Live camera</a><div class="system-pill"><span class="status-dot {{ 'is-ok' if status.system_status == 'ok' else 'is-warn' }}"></span>{{ status.system_status|upper }} <small>SYSTEM STATUS</small></div></div>
     </header>
     <section class="hero">
       <div><p class="eyebrow">PHASE 01 / COMMAND VIEW</p><h1>Security command center</h1><p class="lede">A clear operational baseline for your physical security environment.</p></div>
