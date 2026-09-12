@@ -1,6 +1,7 @@
-"""SQLite schema for the Phase 1 AEGIS foundation."""
+"""SQLite schema for AEGIS Phases 1-5."""
 
 SCHEMA_STATEMENTS = (
+    # Phase 1 tables
     """
     CREATE TABLE IF NOT EXISTS persons (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,6 +83,55 @@ SCHEMA_STATEMENTS = (
         resource_id INTEGER,
         created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         details TEXT
+    )
+    """,
+    # Phase 5 attendance table
+    """
+    CREATE TABLE IF NOT EXISTS attendance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        person_id INTEGER NOT NULL,
+        person_name TEXT NOT NULL,
+        location_id INTEGER,
+        camera_id INTEGER,
+        entry_time TEXT NOT NULL,
+        exit_time TEXT,
+        duration_seconds INTEGER,
+        status TEXT NOT NULL DEFAULT 'PRESENT',
+        confidence REAL DEFAULT 0.0,
+        visit_count INTEGER DEFAULT 1,
+        first_seen_at TEXT NOT NULL,
+        last_seen_at TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (person_id) REFERENCES persons(id),
+        FOREIGN KEY (location_id) REFERENCES locations(id),
+        FOREIGN KEY (camera_id) REFERENCES cameras(id)
+    )
+    """,
+)
+
+# Migration statements for backward compatibility
+MIGRATION_STATEMENTS = (
+    """
+    CREATE TABLE IF NOT EXISTS attendance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        person_id INTEGER NOT NULL,
+        person_name TEXT NOT NULL,
+        location_id INTEGER,
+        camera_id INTEGER,
+        entry_time TEXT NOT NULL,
+        exit_time TEXT,
+        duration_seconds INTEGER,
+        status TEXT NOT NULL DEFAULT 'PRESENT',
+        confidence REAL DEFAULT 0.0,
+        visit_count INTEGER DEFAULT 1,
+        first_seen_at TEXT NOT NULL,
+        last_seen_at TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (person_id) REFERENCES persons(id),
+        FOREIGN KEY (location_id) REFERENCES locations(id),
+        FOREIGN KEY (camera_id) REFERENCES cameras(id)
     )
     """,
 )
